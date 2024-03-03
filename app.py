@@ -12,7 +12,7 @@ def get_access_token():
     return token
 
 def converse(query):
-    url = "https://discoveryengine.googleapis.com/v1alpha/projects/477054480627/locations/global/collections/default_collection/dataStores/genai-anytime_1698398847402/conversations/-:converse"
+    url = "https://discoveryengine.googleapis.com/v1alpha/projects/765365948712/locations/global/collections/default_collection/dataStores/fb_1709502882900/servingConfigs/default_search:search"
 
     headers = {
         "Authorization": f"Bearer {get_access_token()}",
@@ -20,16 +20,14 @@ def converse(query):
     }
 
     data = {
-        "query": {"input": query},
-        "summarySpec": {
-            "summaryResultCount": 5,
-            "ignoreAdversarialQuery": True,
-            "includeCitations": True
-        }
+        "query":query,
+        "pageSize":1,
+        "queryExpansionSpec":{"condition":"AUTO"},
+        "spellCorrectionSpec":{"mode":"AUTO"}
     }
 
     response = requests.post(url, headers=headers, json=data)
-    return response.json()
+    return response.json()["results"][0]["document"]["structData"]["answer"]
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
